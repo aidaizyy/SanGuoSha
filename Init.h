@@ -10,6 +10,7 @@
 #define Init_h
 
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 #include "Manager.h"

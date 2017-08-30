@@ -265,9 +265,13 @@ void Manager::useCards(int player) {
     int countSha = 1;
     while (1) {
         printCards(player);
-        cout << "请输入id出牌，输入-1放弃出牌" << endl;
         int pos = -1;
+        cout << "请输入id出牌，输入-1放弃出牌" << endl;
         cin >> pos;
+        while (pos < -1 || pos >= getNumCardsForOne(player)) {
+            cout << "请输入id出牌，输入-1放弃出牌" << endl;
+            cin >> pos;
+        }
         if (pos == -1)
             break;
         if (getCardForOne(player, pos)->getContent() == C_SHA) {
@@ -347,6 +351,10 @@ bool Manager::useSha(int player) {
     cout << "请输入你想对哪位玩家出杀(0 - " << numPlayers - 1 << "), 除了你自己(" << players[player]->getHero()->getContent() << "), 输入-1放弃出杀: ";
     int pos = -1;
     cin >> pos;
+    while (pos < -1 || pos >= numPlayers) {
+        cout << "请输入你想对哪位玩家出杀(0 - " << numPlayers - 1 << "), 除了你自己(" << players[player]->getHero()->getContent() << "), 输入-1放弃出杀: ";
+        cin >> pos;
+    }
     if (pos == -1)
         return false;
     //暂未考虑距离
@@ -360,6 +368,10 @@ bool Manager::useTao(int player) {
     cout << "请输入你想对哪位玩家出桃(0 - " << numPlayers - 1 << "), 包括你自己(" << players[player]->getHero()->getContent() << "), 输入-1放弃出桃: ";
     int pos = -1;
     cin >> pos;
+    while (pos < -1 || pos >= numPlayers) {
+        cout << "请输入你想对哪位玩家出桃(0 - " << numPlayers - 1 << "), 包括你自己(" << players[player]->getHero()->getContent() << "), 输入-1放弃出桃: ";
+        cin >> pos;
+    }
     if (pos == -1)
         return false;
     //暂未考虑距离
@@ -378,6 +390,10 @@ bool Manager::recvSha(int player, int from) {
             cout << "请输入id出牌，输入-1放弃出牌" << endl;
             int pos = -1;
             cin >> pos;
+            while (pos < -1 || pos >= getNumCardsForOne(player)) {
+                cout << "请输入id出牌，输入-1放弃出牌" << endl;
+                cin >> pos;
+            }
             if (pos == -1)
                 break;
             if (getCardForOne(player, pos)->getContent() == C_SHAN) {
