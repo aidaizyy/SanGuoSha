@@ -9,50 +9,58 @@
 #include "Magic.h"
 
 //初始化各英雄技能
-vector<int> jianxiong() {
+vector<int> m_jianxiong() {
     return vector<int>();
 }
 
-vector<int> hujia() {
+vector<int> m_hujia() {
     return vector<int>();
 }
 
-vector<int> fankui() {
+vector<int> m_fankui() {
     return vector<int>();
 }
 
-vector<int> guicai() {
+vector<int> m_guicai() {
     return vector<int>();
 }
 
-vector<int> ganglie() {
+vector<int> m_ganglie() {
     return vector<int>();
 }
 
-vector<int> tuxi() {
+vector<int> m_tuxi() {
     return vector<int>();
 }
 
-vector<int> rende() {
+vector<int> m_rende() {
     return vector<int>();
 }
 
-vector<int> jijiang() {
+vector<int> m_jijiang() {
     return vector<int>();
 }
 
-vector<int> guanxing() {
+vector<int> m_guanxing() {
     return vector<int>();
 }
 
-vector<int> kongcheng() {
+vector<int> m_kongcheng() {
     return vector<int>();
 }
 
-vector<int> wusheng() {
+vector<int> m_wusheng() {
     return vector<int>();
 }
 
-vector<int> paoxiao() {
+vector<int> m_paoxiao() {
+    return vector<int>();
+}
+
+vector<int> m_wuzhongshengyou() {
+    return vector<int>();
+}
+
+vector<int> m_zhugeliannu() {
     return vector<int>();
 }

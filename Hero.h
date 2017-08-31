@@ -16,14 +16,14 @@ using namespace std;
 #include "Card.h"
 #include "Init.h"
 
-//初始化各英雄
-void initCaocaoCards(unordered_map<string, HeroCard*>& c_herocards);
-void initSimayiCards(unordered_map<string, HeroCard*>& c_herocards);
-void initXiahoudunCards(unordered_map<string, HeroCard*>& c_herocards);
-void initZhangliaoCards(unordered_map<string, HeroCard*>& c_herocards);
-void initLiubeiCards(unordered_map<string, HeroCard*>& c_herocards);
-void initZhugeliangCards(unordered_map<string, HeroCard*>& c_herocards);
-void initGuanyuCards(unordered_map<string, HeroCard*>& c_herocards);
-void initZhangfeiCards(unordered_map<string, HeroCard*>& c_herocards);
+//初始化各英雄信息
+void initCaocao(unordered_map<string, HeroCard*>& herocards);
+void initSimayi(unordered_map<string, HeroCard*>& herocards);
+void initXiahoudun(unordered_map<string, HeroCard*>& herocards);
+void initZhangliao(unordered_map<string, HeroCard*>& herocards);
+void initLiubei(unordered_map<string, HeroCard*>& herocards);
+void initZhugeliang(unordered_map<string, HeroCard*>& herocards);
+void initGuanyu(unordered_map<string, HeroCard*>& herocards);
+void initZhangfei(unordered_map<string, HeroCard*>& herocards);
 
 #endif /* Hero_h */

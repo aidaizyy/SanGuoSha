@@ -33,6 +33,12 @@ public:
     void setHero(HeroCard a) {
         hero = new HeroCard(a);
     }
+    void setHasEquipment(int type, bool b) {
+        hasEquipment[type] = b;
+    }
+    void setEquipment(int type, string s) {
+        equipment[type] = s;
+    }
     int getPos() {
         return pos;
     }
@@ -42,11 +48,11 @@ public:
     HeroCard* getHero() {
         return hero;
     }
-    bool* getHasEquipment() {
-        return hasEquipment;
+    bool getHasEquipment(int type) {
+        return hasEquipment[type];
     }
-    string* getEquipment() {
-        return equipment;
+    string getEquipment(int type) {
+        return equipment[type];
     }
     vector<GameCard*> cards;
     int numCards;

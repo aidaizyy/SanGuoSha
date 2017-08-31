@@ -15,17 +15,23 @@
 using namespace std;
 
 //初始化各英雄技能
-vector<int> jianxiong();
-vector<int> hujia();
-vector<int> fankui();
-vector<int> guicai();
-vector<int> ganglie();
-vector<int> tuxi();
-vector<int> rende();
-vector<int> jijiang();
-vector<int> guanxing();
-vector<int> kongcheng();
-vector<int> wusheng();
-vector<int> paoxiao();
+vector<int> m_jianxiong();
+vector<int> m_hujia();
+vector<int> m_fankui();
+vector<int> m_guicai();
+vector<int> m_ganglie();
+vector<int> m_tuxi();
+vector<int> m_rende();
+vector<int> m_jijiang();
+vector<int> m_guanxing();
+vector<int> m_kongcheng();
+vector<int> m_wusheng();
+vector<int> m_paoxiao();
+
+//初始化各锦囊技能
+vector<int> m_wuzhongshengyou();
+
+//初始化各装备技能
+vector<int> m_zhugeliannu();
 
 #endif /* Magic_h */

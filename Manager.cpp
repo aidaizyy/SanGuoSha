@@ -38,42 +38,43 @@ void Manager::run() {
     isQuit = false;
     while (!isQuit) {
         for (int i = 0; i < numPlayers && !isQuit; ++i) {
-            if (players[i]->health == 0)
+            if (getHealthForOne(i) == 0)
                 continue;
             
             //准备
-            if (getNumMagic(i, 0) > 0) {
-                int size = getNumMagic(i, 0);
+            if (getNumMagicForOne(i, 0) > 0) {
+                int size = getNumMagicForOne(i, 0);
                 for (int j = 0; j < size; ++j) {
-                    string magic = getMagic(i, 0)[j];
+                    string magic = getMagicForOne(i, 0)[j];
                     (*(magics[magic]))();
                 }
             }
             
             //判定
-            if (getNumMagic(i, 1) > 0) {
-                int size = getNumMagic(i, 1);
+            if (getNumMagicForOne(i, 1) > 0) {
+                int size = getNumMagicForOne(i, 1);
                 for (int j = 0; j < size; ++j) {
-                    string magic = getMagic(i, 1)[j];
+                    string magic = getMagicForOne(i, 1)[j];
                     (*(magics[magic]))();
                 }
             }
             
             //摸牌
-            if (getNumMagic(i, 2) > 0) {
-                int size = getNumMagic(i, 2);
+            if (getNumMagicForOne(i, 2) > 0) {
+                int size = getNumMagicForOne(i, 2);
                 for (int j = 0; j < size; ++j) {
-                    string magic = getMagic(i, 2)[j];
+                    string magic = getMagicForOne(i, 2)[j];
                     (*(magics[magic]))();
                 }
             }
             touchCards(i);
+            touchCards(i);
             
             //出牌
-            if (getNumMagic(i, 3) > 0) {
-                int size = getNumMagic(i, 3);
+            if (getNumMagicForOne(i, 3) > 0) {
+                int size = getNumMagicForOne(i, 3);
                 for (int j = 0; j < size; ++j) {
-                    string magic = getMagic(i, 3)[j];
+                    string magic = getMagicForOne(i, 3)[j];
                     (*(magics[magic]))();
                 }
             }
@@ -82,19 +83,20 @@ void Manager::run() {
                 break;
             
             //弃牌
-            if (getNumMagic(i, 4) > 0) {
-                int size = getNumMagic(i, 4);
+            if (getNumMagicForOne(i, 4) > 0) {
+                int size = getNumMagicForOne(i, 4);
                 for (int j = 0; j < size; ++j) {
-                    string magic = getMagic(i, 4)[j];
+                    string magic = getMagicForOne(i, 4)[j];
                     (*(magics[magic]))();
                 }
             }
+            dropCards(i);
             
             //结束
-            if (getNumMagic(i, 5) > 0) {
-                int size = getNumMagic(i, 5);
+            if (getNumMagicForOne(i, 5) > 0) {
+                int size = getNumMagicForOne(i, 5);
                 for (int j = 0; j < size; ++j) {
-                    string magic = getMagic(i, 5)[j];
+                    string magic = getMagicForOne(i, 5)[j];
                     (*(magics[magic]))();
                 }
             }
@@ -117,7 +119,7 @@ int Manager::getPos() {
 
 //洗牌
 void Manager::shuffleCards() {
-    random_shuffle(getCards()->cards.begin(), getCards()->cards.end());
+    random_shuffle(getCards()->cards.begin(), getCards()->cards.end(), myrandom);
     int pos = getNumCards() - 1;
     setPos(pos);
 }
@@ -140,7 +142,7 @@ void Manager::addCardForOne(int player, int pos) {
 void Manager::delCardForOne(int player, int pos) {
     int size = (int)getPlayers()[player]->cards.size();
     for (int i = pos; i < size - 1; ++i)
-        getPlayers()[player]->cards[pos] = getPlayers()[player]->cards[pos + 1];
+        getPlayers()[player]->cards[i] = getPlayers()[player]->cards[i + 1];
     getPlayers()[player]->cards.erase(manager->getPlayers()[player]->cards.end() - 1);
 }
 
@@ -149,36 +151,91 @@ GameCard* Manager::getCardForOne(int player, int pos) {
     return getPlayers()[player]->cards[pos];
 }
 
+void Manager::setExistForOne(int player, int pos, bool b) {
+    getCards()->exist[getPlayers()[player]->cards[pos]->getId()] = b;
+}
+
 //返回某玩家的手牌数量
 int Manager::getNumCardsForOne(int player) {
     return (int)getPlayers()[player]->cards.size();
 }
 
-void Manager::setExistForOne(int player, int pos, bool b) {
-    getCards()->exist[getPlayers()[player]->cards[pos]->getId()] = b;
+//改变某玩家的生命值
+void Manager::setHealthForOne(int player, int diff) {
+    players[player]->health += diff;
+}
+
+//返回某玩家的生命值
+int Manager::getHealthForOne(int player) {
+    return getPlayers()[player]->health;
+}
+
+//返回某玩家的身份信息
+string Manager::getActorContentForOne(int player) {
+    return getPlayers()[player]->getActor()->getContent();
+}
+
+//返回某玩家的英雄信息
+string Manager::getHeroContentForOne(int player) {
+    return getPlayers()[player]->getHero()->getContent();
+}
+
+//返回某玩家的英雄国籍
+int Manager::getCountryForOne(int player) {
+    return getPlayers()[player]->getHero()->getCountry();
+}
+
+//返回某玩家的英雄生命上限
+int Manager::getHeroHealthForOne(int player) {
+    return getPlayers()[player]->getHero()->getHealth();
 }
 
 //返回某玩家的英雄技能数量
-int Manager::getNumMagic(int player, int type) {
-    return players[player]->getHero()->getNumMagic()[type];
+int Manager::getNumMagicForOne(int player, int type) {
+    return getPlayers()[player]->getHero()->getNumMagic()[type];
 }
 
 //返回某玩家的英雄技能信息
-vector<string> Manager::getMagic(int player, int type) {
-    return players[player]->getHero()->getMagics()[type];
+vector<string> Manager::getMagicForOne(int player, int type) {
+    return getPlayers()[player]->getHero()->getMagics()[type];
+}
+
+//返回某玩家的位置
+int Manager::getPosForOne(int player) {
+    return getPlayers()[player]->getPos();
+}
+
+//改变某玩家是否有装备
+void Manager::setHasEquipmentForOne(int player, int type, bool b) {
+    players[player]->setHasEquipment(type, b);
+}
+
+//改变某玩家的装备名称
+void Manager::setEquipmentForOne(int player, int type, string s) {
+    players[player]->setEquipment(type, s);
+}
+
+//返回某玩家是否有装备
+bool Manager::getHasEquipmentForOne(int player, int type) {
+    return getPlayers()[player]->getHasEquipment(type);
+}
+
+//返回某玩家的装备名称
+string Manager::getEquipmentForOne(int player, int type) {
+    return getPlayers()[player]->getEquipment(type);
 }
 
 //统计主公位置和身份信息
 void Manager::countInfo() {
     for (int i = 0; i < numPlayers; ++i) {
-        if (players[i]->getActor()->getContent() == A_ZHUGONG) {
+        if (getActorContentForOne(i) == A_ZHUGONG) {
             isZhugong = i;
             ++numActors[0];
-        } else if (players[i]->getActor()->getContent() == A_ZHONGCHEN)
+        } else if (getActorContentForOne(i) == A_ZHONGCHEN)
             ++numActors[1];
-        else if (players[i]->getActor()->getContent() == A_FANZEI)
+        else if (getActorContentForOne(i) == A_FANZEI)
             ++numActors[2];
-        else if (players[i]->getActor()->getContent() == A_NEIJIAN)
+        else if (getActorContentForOne(i) == A_NEIJIAN)
             ++numActors[3];
     }
 }
@@ -186,29 +243,29 @@ void Manager::countInfo() {
 //打印所有玩家的可见情况
 void Manager::printInfo() {
     for (int i = 0; i < numPlayers; ++i) {
-        cout << "玩家" << i << ": " << players[i]->getHero()->getContent() << " 有" << getNumCardsForOne(i) << "张牌";
+        cout << "玩家" << i << ": " << getHeroContentForOne(i) << " 有" << getNumCardsForOne(i) << "张牌";
         if (i == isZhugong)
-            cout << " (主公)" << endl;
+            cout << " (主公)." << endl;
         else
-            cout << endl;
+            cout << "." << endl;
         cout << "生命: ";
         if (players[i]->health == 0)
-            cout << "死亡" << " " << players[i]->getActor()->getContent() << endl;
+            cout << "死亡" << " " << getActorContentForOne(i) << endl;
         else
             cout << players[i]->health << endl;
         cout << "武器: ";
-        if (players[i]->getHasEquipment()[0])
-            cout << players[i]->getEquipment()[0] << endl;
+        if (getHasEquipmentForOne(i, 0))
+            cout << getEquipmentForOne(i, 0) << endl;
         else
             cout << "无" << endl;
         cout << "马匹: ";
-        if (players[i]->getHasEquipment()[1])
-            cout << players[i]->getEquipment()[1] << endl;
+        if (getHasEquipmentForOne(i, 1))
+            cout << getEquipmentForOne(i, 1) << endl;
         else
             cout << "无" << endl;
         cout << "防具: ";
-        if (players[i]->getHasEquipment()[2])
-            cout << players[i]->getEquipment()[2] << endl;
+        if (getHasEquipmentForOne(i, 2))
+            cout << getEquipmentForOne(i, 2) << endl;
         else
             cout << "无" << endl;
             
@@ -218,7 +275,7 @@ void Manager::printInfo() {
 //打印某玩家的手牌
 void Manager::printCards(int player) {
     int size = getNumCardsForOne(player);
-    cout << "你(" << players[player]->getHero()->getContent() << ")现在有牌：" << endl;
+    cout << "你(" << getHeroContentForOne(player) << ", " << getActorContentForOne(player) << ")现在有牌：" << endl;
     for (int i = 0; i < size; ++i) {
         cout << i << ": " << getCardForOne(player, i)->getContent() << " ";
         if (getCardForOne(player, i)->getColor() == 0)
@@ -256,27 +313,27 @@ void Manager::touchCards(int player) {
     --pos;
     if (pos == -1)
         shuffleCards();
-    pos = getPos();
+    setPos(pos);
 }
 
 //某玩家出一张牌
 void Manager::useCards(int player) {
     printInfo();
     int countSha = 1;
-    while (1) {
+    while (!isQuit) {
         printCards(player);
         int pos = -1;
-        cout << "请输入id出牌，输入-1放弃出牌" << endl;
+        cout << "请输入id出牌，输入-1放弃出牌:" << endl;
         cin >> pos;
         while (pos < -1 || pos >= getNumCardsForOne(player)) {
-            cout << "请输入id出牌，输入-1放弃出牌" << endl;
+            cout << "请输入id出牌，输入-1放弃出牌:" << endl;
             cin >> pos;
         }
         if (pos == -1)
             break;
         if (getCardForOne(player, pos)->getContent() == C_SHA) {
-            if (countSha == 0) {
-                cout << "每回合只能出一次杀" << endl;
+            if (countSha == 0 && (!getHasEquipmentForOne(player, 0) || getEquipmentForOne(player, 0) != E_ZHUGELIANNU)) {
+                cout << "每回合只能出一次杀." << endl;
                 continue;
             }
             if (useSha(player)) {
@@ -289,8 +346,35 @@ void Manager::useCards(int player) {
                 setExistForOne(player, pos, false);
                 delCardForOne(player, pos);
             }
-        } else {
-            cout << "现在暂不支持出这张票" << endl;
+        } else if (getCardForOne(player, pos)->getContent() == J_WUZHONGSHENGYOU) {
+            if (useWuzhongshengyou(player)) {
+                setExistForOne(player, pos, false);
+                delCardForOne(player, pos);
+            }
+        } else if (getCardForOne(player, pos)->getContent() == E_ZHUGELIANNU) {
+            if (useZhugeliannu(player)) {
+                setExistForOne(player, pos, false);
+                delCardForOne(player, pos);
+            }
+        } else
+            cout << "现在暂不支持出这张牌." << endl;
+    }
+}
+
+void Manager::dropCards(int player) {
+    if (getNumCardsForOne(player) > getHealthForOne(player)) {
+        cout << "你有手牌" << getNumCardsForOne(player) << "张, " << "生命值为" << getHealthForOne(player) << ", 所以需要弃牌" << getNumCardsForOne(player) - getHealthForOne(player) << "张.";
+        cout << "请输入需要丢弃的牌的id:" << endl;
+        while (getNumCardsForOne(player) > getHealthForOne(player)) {
+            printCards(player);
+            int pos = 0;
+            cin >> pos;
+            while (pos < 0 || pos >= getNumCardsForOne(player)) {
+                cout << "你输入的id不符合规矩，请重新输入:" << endl;
+                cin >> pos;
+            }
+            setExistForOne(player, pos, false);
+            delCardForOne(player, pos);
         }
     }
 }
@@ -298,10 +382,10 @@ void Manager::useCards(int player) {
 //某玩家被杀或被桃
 void Manager::recv(int player, int from, int type) {
     //type == 0, 被杀; type == 1, 被桃; type == 2...n, 其他;
-    if (getNumMagic(player, 6) > 0) {
-        int size = getNumMagic(player, 6);
+    if (getNumMagicForOne(player, 6) > 0) {
+        int size = getNumMagicForOne(player, 6);
         for (int j = 0; j < size; ++j) {
-            string magic = getMagic(player, 6)[j];
+            string magic = getMagicForOne(player, 6)[j];
             (*(magics[magic]))();
         }
     }
@@ -313,21 +397,59 @@ void Manager::recv(int player, int from, int type) {
 }
 
 //某玩家死亡
-void Manager::dead(int player) {
-    cout << "玩家" << player << ": " << players[player]->getHero()->getContent() << " 死亡" << endl;
-    cout << "身份: " << players[player]->getActor()->getContent() << endl;
-    if (players[player]->getActor()->getContent() == A_ZHUGONG) {
+void Manager::dead(int player, int from) {
+    cout << "玩家" << player << ": " << getHeroContentForOne(player) << " 濒临死亡." << endl;
+    int i = player;
+    while (1) {
+        if (getHealthForOne(i) > 0) {
+            bool hasCard = false;
+            for (int j = 0; j < getNumCardsForOne(i); ++j) {
+                if (getCardForOne(i, j)->getContent() == C_TAO)
+                    hasCard = true;
+            }
+            if (hasCard) {
+                cout << "玩家" << i << ": " << getHeroContentForOne(i) << " 愿意救玩家" << ": " << getHeroContentForOne(player) << "吗？" << endl;
+                printCards(i);
+                cout << "请输入id出桃，输入-1放弃出桃:" << endl;
+                int pos = -1;
+                cin >> pos;
+                while ((pos < -1 || pos >= getNumCardsForOne(i)) || (pos != -1 && getCardForOne(i, pos)->getContent() != C_TAO)) {
+                    cout << "你输入的id不符合规矩，请重新输入:" << endl;
+                    cin >> pos;
+                }
+                if (pos != -1) {
+                    setExistForOne(i, pos, false);
+                    delCardForOne(i, pos);
+                    setHealthForOne(player, 1);
+                    return ;
+                }
+            }
+        }
+        if (i == numPlayers - 1)
+            i = -1;
+        if (i == player - 1)
+            break;
+        ++i;
+    }
+    cout << "玩家" << player << ": " << getHeroContentForOne(player) << " 死亡." << endl;
+    cout << "身份: " << getActorContentForOne(player) << endl;
+    if (getActorContentForOne(player) == A_ZHUGONG) {
         if (numActors[2] > 0 || numActors[1] > 0)
             cout << "游戏结束，反贼胜利！" << endl;
         else
             cout << "游戏结束，内奸胜利！" << endl;
         isQuit = true;
-    } else if (players[player]->getActor()->getContent() == A_ZHONGCHEN)
+    } else if (getActorContentForOne(player) == A_ZHONGCHEN) {
         --numActors[1];
-    else if (players[player]->getActor()->getContent() == A_FANZEI)
+    } else if (getActorContentForOne(player) == A_FANZEI) {
         --numActors[2];
-    else
+        //杀死一个反贼摸三张牌
+        touchCards(from);
+        touchCards(from);
+        touchCards(from);
+    } else {
         --numActors[3];
+    }
     if (numActors[2] == 0 && numActors[3] == 0) {
         cout << "游戏结束，主公和忠臣胜利！" << endl;
         isQuit = true;
@@ -335,24 +457,25 @@ void Manager::dead(int player) {
 }
 
 //某玩家需要判定
-void Manager::judge(int player, int type) {
-    if (getNumMagic(player, 1) > 0) {
-        int size = getNumMagic(player, 1);
+bool Manager::judge(int player, int type) {
+    if (getNumMagicForOne(player, 1) > 0) {
+        int size = getNumMagicForOne(player, 1);
         for (int j = 0; j < size; ++j) {
-            string magic = getMagic(player, 1)[j];
+            string magic = getMagicForOne(player, 1)[j];
             (*(magics[magic]))();
         }
     }
+    return false;
 }
 
 //某玩家出杀
 bool Manager::useSha(int player) {
     printInfo();
-    cout << "请输入你想对哪位玩家出杀(0 - " << numPlayers - 1 << "), 除了你自己(" << players[player]->getHero()->getContent() << "), 输入-1放弃出杀: ";
+    cout << "请输入你想对哪位玩家出杀(0 - " << numPlayers - 1 << "), 除了你自己(" << getHeroContentForOne(player) << "), 输入-1放弃出杀: ";
     int pos = -1;
     cin >> pos;
     while (pos < -1 || pos >= numPlayers) {
-        cout << "请输入你想对哪位玩家出杀(0 - " << numPlayers - 1 << "), 除了你自己(" << players[player]->getHero()->getContent() << "), 输入-1放弃出杀: ";
+        cout << "请输入你想对哪位玩家出杀(0 - " << numPlayers - 1 << "), 除了你自己(" << getHeroContentForOne(player) << "), 输入-1放弃出杀: ";
         cin >> pos;
     }
     if (pos == -1)
@@ -365,11 +488,11 @@ bool Manager::useSha(int player) {
 //某玩家出桃
 bool Manager::useTao(int player) {
     printInfo();
-    cout << "请输入你想对哪位玩家出桃(0 - " << numPlayers - 1 << "), 包括你自己(" << players[player]->getHero()->getContent() << "), 输入-1放弃出桃: ";
+    cout << "请输入你想对哪位玩家出桃(0 - " << numPlayers - 1 << "), 包括你自己(" << getHeroContentForOne(player) << "), 输入-1放弃出桃: ";
     int pos = -1;
     cin >> pos;
     while (pos < -1 || pos >= numPlayers) {
-        cout << "请输入你想对哪位玩家出桃(0 - " << numPlayers - 1 << "), 包括你自己(" << players[player]->getHero()->getContent() << "), 输入-1放弃出桃: ";
+        cout << "请输入你想对哪位玩家出桃(0 - " << numPlayers - 1 << "), 包括你自己(" << getHeroContentForOne(player) << "), 输入-1放弃出桃: ";
         cin >> pos;
     }
     if (pos == -1)
@@ -381,17 +504,17 @@ bool Manager::useTao(int player) {
 
 //某玩家被杀
 bool Manager::recvSha(int player, int from) {
-    if (players[player]->getHasEquipment()[2])
+    if (getHasEquipmentForOne(player, 2))
         judge(player, 0);
     else {
-        cout << "你(" << players[player]->getHero()->getContent() << ")被玩家" << from << ": " << players[from]->getHero()->getContent() << " 出杀，是否出闪" << endl;
+        cout << "你(" << getHeroContentForOne(player) << ")被玩家" << from << ": " << getHeroContentForOne(player) << " 出杀，是否出闪:" << endl;
         printCards(player);
         while (1) {
-            cout << "请输入id出牌，输入-1放弃出牌" << endl;
+            cout << "请输入id出牌，输入-1放弃出牌:" << endl;
             int pos = -1;
             cin >> pos;
             while (pos < -1 || pos >= getNumCardsForOne(player)) {
-                cout << "请输入id出牌，输入-1放弃出牌" << endl;
+                cout << "请输入id出牌，输入-1放弃出牌:" << endl;
                 cin >> pos;
             }
             if (pos == -1)
@@ -401,22 +524,46 @@ bool Manager::recvSha(int player, int from) {
                 delCardForOne(player, pos);
                 return false;
             } else {
-                cout << "你出的不是闪" << endl;
+                cout << "你出的不是闪." << endl;
             }
         }
     }
-    --(players[player]->health);
-    if (players[player]->health == 0)
-        dead(player);
+    setHealthForOne(player, -1);
+    if (getHealthForOne(player) == 0)
+        dead(player, from);
     return true;
 }
 
 //某玩家被桃
 bool Manager::recvTao(int player, int from) {
-    if (players[player]->health < players[player]->getHero()->getHealth()) {
-        ++(players[player]->health);
+    if (getHealthForOne(player) < getHeroHealthForOne(player)) {
+        setHealthForOne(player, 1);
         return true;
     } else
         return false;
+}
+
+bool Manager::useZhugeliannu(int player) {
+    setHasEquipmentForOne(player, 0, true);
+    setEquipmentForOne(player, 0, E_ZHUGELIANNU);
+    return true;
+}
+
+bool Manager::useWuzhongshengyou(int player) {
+    for (int i = 0; i < numPlayers; ++i) {
+        if (getHealthForOne(player) == 0)
+            continue;
+        bool hasCard = false;
+        for (int j = 0; j < getNumCardsForOne(player); ++j) {
+            if (getCardForOne(player, j)->getContent() == J_WUXIEKEJI)
+                hasCard = true;
+        }
+        if (hasCard) {
+            //如果有无懈可击牌。。。没继续写
+        }
+    }
+    touchCards(player);
+    touchCards(player);
+    return true;
 }
 

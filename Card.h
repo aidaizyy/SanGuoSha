@@ -47,7 +47,7 @@ public:
         for (int i = 0; i < 8; ++i)
             numMagic[i] = n[i];
     };
-    int getCountrt() {
+    int getCountry() {
         return country;
     }
     int getHealth() {
